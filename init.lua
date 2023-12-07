@@ -36,18 +36,18 @@ local cfg = require("yaml-companion").setup({
 require("lspconfig").yamlls.setup(cfg)
 
 -- Config | Which-Key
-require("which-key").register({
-    f = {
-        name = "Telescope",
-        j = { "<cmd>Telescope find_files<cr>", "Find File" },
-        k = { "<cmd>Telescope live_grep<cr>", "Find Text in File" },
-        o = { "<cmd>Telescope oldfiles<cr>", "Find recent File" },
-        b = { "<cmd>Telescope buffers<cr>", "Find Buffer" },
-        r = { "<cmd>Telescope registers<cr>", "Find Register" },
-        c = { "<cmd>Telescope commands<cr>", "Find Command" },
-        m = { "<cmd>Telescope keymaps<cr>", "Find Keymap" },
-        u = { "<cmd>lua require('telescope').extensions.undo.undo()<cr>", "Find in Undo Tree" },
-        y = { "<cmd>YAMLTelescope<cr>", "Find in YAML" },
-    },
-    h = { function() require("harpoon.ui").toggle_quick_menu() end, "Harpoon" }
-}, { prefix = "<leader>" })
+-- require("which-key").register({
+--     f = {
+--         name = "Telescope",
+--         j = { "<cmd>Telescope find_files<cr>", "Find File" },
+--         k = { "<cmd>Telescope live_grep<cr>", "Find Text in File" },
+--         o = { "<cmd>Telescope oldfiles<cr>", "Find recent File" },
+--         b = { "<cmd>Telescope buffers<cr>", "Find Buffer" },
+--         r = { "<cmd>Telescope registers<cr>", "Find Register" },
+--         c = { "<cmd>Telescope commands<cr>", "Find Command" },
+--         m = { "<cmd>Telescope keymaps<cr>", "Find Keymap" },
+--         u = { "<cmd>lua require('telescope').extensions.undo.undo()<cr>", "Find in Undo Tree" },
+--         y = { "<cmd>YAMLTelescope<cr>", "Find in YAML" },
+--     },
+--     h = { function() require("harpoon.ui").toggle_quick_menu() end, "Harpoon" }
+-- }, { prefix = "<leader>" })
