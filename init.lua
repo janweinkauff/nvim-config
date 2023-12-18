@@ -40,6 +40,17 @@ local cfg = require("yaml-companion").setup({
 })
 require("lspconfig").yamlls.setup(cfg)
 
+require("lspconfig").tailwindcss.setup({
+    filetypes = {
+        'templ'
+    },
+    init_options = {
+        userLanguages = {
+            templ = "html"
+        }
+    }
+})
+
 -- Auto Actions on save
 local function nvim_create_augroups(definitions)
     for group_name, definition in pairs(definitions) do
@@ -57,5 +68,8 @@ nvim_create_augroups({
     go_save = {
         { "BufWritePre", "*.go", "lua vim.lsp.buf.format()" },
         { "BufWritePre", "*.go", ":%! goimports" },
+    },
+    temple_save = {
+        { "BufWritePre", "*.templ", "lua vim.lsp.buf.format()" }
     }
 })
