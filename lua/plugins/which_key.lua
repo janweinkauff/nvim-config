@@ -117,7 +117,12 @@ return {
                     "Workspace Symbols",
                 },
             },
-            h = { function() require("harpoon.ui").toggle_quick_menu() end, "Harpoon" },
+            h = {
+                name = "Harpoon",
+                a = { require("harpoon.mark").add_file, "Add file to harpoon" },
+                l = { require("harpoon.ui").toggle_quick_menu, "Toggle quick menu" },
+                r = { require("harpoon.mark").rm_file, "Remove file from harpoon" },
+            },
             t = {
                 name = "Terminal",
                 g = { "<cmd>lua _LAZYGIT_TOGGLE()<cr>", "Git" },
@@ -125,7 +130,35 @@ return {
                 h = { "<cmd>ToggleTerm size=10 direction=horizontal<cr>", "Horizontal" },
                 v = { "<cmd>ToggleTerm size=80 direction=vertical<cr>", "Vertical" },
             },
-
+            g = {
+                name = "Git",
+                b = { require("telescope.builtin").git_branches, "Branches" },
+                c = {
+                    b = { require("telescope.builtin").git_bcommits, "Buffer commits" },
+                    c = { require("telescope.builtin").git_commits, "Git commits" },
+                },
+                -- Signs
+                h = {
+                name = "Git signs",
+                    p = { "<cmd>Gitsigns preview_hunk<CR>", "Preview hunk" },
+                    r = { "<cmd>Gitsigns reset_hunk<CR>", "Reset hunk" },
+                    s = { "<cmd>Gitsigns stage_hunk<CR>", "Stage hunk" },
+                    -- Toggle highlights
+                    t = {
+                        name = "Toggle highlights",
+                        b = { "<cmd>Gitsigns toggle_current_line_blame<CR>", "Toggle git blame on line" },
+                        l = { "<cmd>Gitsigns toggle_linehl<CR>", "Toggle line highlights" },
+                        n = { "<cmd>Gitsigns toggle_numhl<CR>", "Toggle number highlights" },
+                        s = { "<cmd>Gitsigns toggle_signs<CR>", "Toggle signs" },
+                        w = { "<cmd>Gitsigns toggle_word_diff<CR>", "Toggle word diff highlights" },
+                    },
+                },
+                p = { "<cmd>Git push<CR>", "git push" },
+                s = { "<cmd>Git<CR>", "git status" },
+                f = { "<cmd>Get fetch<CR>", "git fetch" },
+                z = { "<cmd>Gitsigns toggle_current_line_blame<CR>", "Toggle git blame on line" },
+            },
+            y = { '"+y', "Copy to system clipboard", mode = "v" }
         }
 
         which_key.setup(setup)

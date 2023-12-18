@@ -18,6 +18,11 @@ local cfg = require("yaml-companion").setup({
         },
         settings = {
             redhat = { telemetry = { enabled = false } },
+            lua = {
+                diagnostics = {
+                    globals = { 'vim' },
+                },
+            },
             yaml = {
                 validate = true,
                 format = { enable = true },
@@ -35,19 +40,22 @@ local cfg = require("yaml-companion").setup({
 })
 require("lspconfig").yamlls.setup(cfg)
 
--- Config | Which-Key
--- require("which-key").register({
---     f = {
---         name = "Telescope",
---         j = { "<cmd>Telescope find_files<cr>", "Find File" },
---         k = { "<cmd>Telescope live_grep<cr>", "Find Text in File" },
---         o = { "<cmd>Telescope oldfiles<cr>", "Find recent File" },
---         b = { "<cmd>Telescope buffers<cr>", "Find Buffer" },
---         r = { "<cmd>Telescope registers<cr>", "Find Register" },
---         c = { "<cmd>Telescope commands<cr>", "Find Command" },
---         m = { "<cmd>Telescope keymaps<cr>", "Find Keymap" },
---         u = { "<cmd>lua require('telescope').extensions.undo.undo()<cr>", "Find in Undo Tree" },
---         y = { "<cmd>YAMLTelescope<cr>", "Find in YAML" },
---     },
---     h = { function() require("harpoon.ui").toggle_quick_menu() end, "Harpoon" }
--- }, { prefix = "<leader>" })
+-- Auto Actions on save
+local function nvim_create_augroups(definitions)
+    for group_name, definition in pairs(definitions) do
+        vim.api.nvim_command('augroup ' .. group_name)
+        vim.api.nvim_command('autocmd!')
+        for _, def in ipairs(definition) do
+            local command = table.concat(vim.tbl_flatten { 'autocmd', def }, ' ')
+            vim.api.nvim_command(command)
+        end
+        vim.api.nvim_command('augroup END')
+    end
+end
+
+nvim_create_augroups({
+    go_save = {
+        { "BufWritePre", "*.go", "lua vim.lsp.buf.format()" },
+        { "BufWritePre", "*.go", ":%! goimports" },
+    }
+})

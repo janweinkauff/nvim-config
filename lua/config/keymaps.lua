@@ -72,7 +72,3 @@ vim.keymap.set("n", "gR", function() require("trouble").toggle("lsp_references")
 -- Search --
 keymap("", "<leader>hc", ":nohl<cr>", opts)
 
--- Harpoon --
-vim.keymap.set("", "<leader>h", function() require("harpoon.ui").toggle_quick_menu() end)
-vim.keymap.set("", "<leader>ha", function() require("harpoon.mark").add_file() end)
-vim.keymap.set("", "<leader>hr", function() require("harpoon.mark").rm_file() end)
