@@ -91,7 +91,6 @@ return {
         local mappings = {
             k = { "<cmd>bdelete<CR>", "Kill Buffer" },
             p = { "<cmd>Lazy<CR>", "Plugin Manager" },
-            q = { "<cmd>wqall!<CR>", "Quit" },
             w = { "<cmd>w!<CR>", "Save" },
             f = {
                 name = "Telescope",

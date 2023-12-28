@@ -51,6 +51,22 @@ require("lspconfig").tailwindcss.setup({
     }
 })
 
+vim.filetype.add({
+    extension = {
+        templ = "templ",
+    },
+})
+
+local servers = { 'gopls', 'ccls', 'cmake', 'tsserver', 'templ' }
+for _, lsp in ipairs(servers) do
+    require("lspconfig")[lsp].setup {
+        on_attach = on_attach,
+        flags = {
+            debounce_text_changes = 150,
+        },
+    }
+end
+
 -- Auto Actions on save
 local function nvim_create_augroups(definitions)
     for group_name, definition in pairs(definitions) do
