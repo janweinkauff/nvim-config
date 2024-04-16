@@ -70,5 +70,5 @@ vim.keymap.set("n", "<leader>xl", function() require("trouble").toggle("loclist"
 vim.keymap.set("n", "gR", function() require("trouble").toggle("lsp_references") end)
 
 -- Search --
-keymap("", "<leader>hc", ":nohl<cr>", opts)
+keymap("n", "<Esc>", ":nohl<cr>", opts)
 
