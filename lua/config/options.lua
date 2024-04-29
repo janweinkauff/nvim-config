@@ -58,3 +58,10 @@ opt.winminwidth = 4
 opt.wrap = false
 
 vim.g.markdown_recommended_style = 0
+
+
+-- Disable netrw
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+vim.opt.fileencoding = "utf-8"

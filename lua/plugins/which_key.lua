@@ -89,18 +89,20 @@ return {
         }
 
         local mappings = {
+            f = { "<cmd>Telescope find_files<cr>", "Find File" },
+            b = { "<cmd>Telescope buffers<cr>", "Find Buffer" },
+            i = { "<cmd>Telescope live_grep<cr>", "Find Text in File" },
+            w = { "<cmd>w!<CR>", "Save" },
             k = { "<cmd>bdelete<CR>", "Kill Buffer" },
             p = { "<cmd>Lazy<CR>", "Plugin Manager" },
-            w = { "<cmd>w!<CR>", "Save" },
-            f = {
+            s = {
                 name = "Telescope",
-                j = { "<cmd>Telescope find_files<cr>", "Find File" },
-                k = { "<cmd>Telescope live_grep<cr>", "Find Text in File" },
-                o = { "<cmd>Telescope oldfiles<cr>", "Find recent File" },
-                b = { "<cmd>Telescope buffers<cr>", "Find Buffer" },
+                l = { "<cmd>Telescope oldfiles<cr>", "Find Recent File" },
                 r = { "<cmd>Telescope registers<cr>", "Find Register" },
                 c = { "<cmd>Telescope commands<cr>", "Find Command" },
                 m = { "<cmd>Telescope keymaps<cr>", "Find Keymap" },
+                j = { "<cmd>TodoTelescope<cr>", "Find Todos" },
+                n = { "<cmd>lua require('telescope').extensions.notify.notify()<cr>", "Find Notification" },
                 u = { "<cmd>lua require('telescope').extensions.undo.undo()<cr>", "Find in Undo Tree" },
                 y = { "<cmd>YAMLTelescope<cr>", "Find in YAML" },
             },
@@ -122,12 +124,13 @@ return {
                 l = { require("harpoon.ui").toggle_quick_menu, "Toggle quick menu" },
                 r = { require("harpoon.mark").rm_file, "Remove file from harpoon" },
             },
-            t = {
-                name = "Terminal",
-                g = { "<cmd>lua _LAZYGIT_TOGGLE()<cr>", "Git" },
-                f = { "<cmd>ToggleTerm direction=float<cr>", "Float" },
-                h = { "<cmd>ToggleTerm size=10 direction=horizontal<cr>", "Horizontal" },
-                v = { "<cmd>ToggleTerm size=80 direction=vertical<cr>", "Vertical" },
+            j = {
+                name = "Trouble",
+                t = { "<cmd>TroubleToggle<cr>", "Diagnostics" },
+                d = { "<cmd>TroubleToggle document_diagnostics<cr>", "Document" },
+                w = { "<cmd>TroubleToggle workspace_diagnostics<cr>", "Workspace" },
+                q = { "<cmd>TroubleToggle quickfix<cr>", "Quickfix" },
+                c = { "<cmd>TroubleClose<cr>", "Close" },
             },
             g = {
                 name = "Git",
@@ -138,7 +141,7 @@ return {
                 },
                 -- Signs
                 h = {
-                name = "Git signs",
+                    name = "Git signs",
                     p = { "<cmd>Gitsigns preview_hunk<CR>", "Preview hunk" },
                     r = { "<cmd>Gitsigns reset_hunk<CR>", "Reset hunk" },
                     s = { "<cmd>Gitsigns stage_hunk<CR>", "Stage hunk" },
@@ -157,7 +160,7 @@ return {
                 f = { "<cmd>Get fetch<CR>", "git fetch" },
                 z = { "<cmd>Gitsigns toggle_current_line_blame<CR>", "Toggle git blame on line" },
             },
-            y = { '"+y', "Copy to system clipboard", mode = "v" }
+            e = { "<cmd>Neotree toggle float<CR>", "Float File Explorer" },
         }
 
         which_key.setup(setup)

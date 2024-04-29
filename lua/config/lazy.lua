@@ -13,4 +13,23 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup("plugins")
+require("lazy").setup(
+    { import = "plugins" },
+    {
+        install = {
+            missing = true,
+            colorscheme = { "catppuccin" }
+        },
+        checker = {
+            enabled = true,
+            notify = false,
+        },
+        change_detection = {
+            enabled = true,
+            notify = false,
+        },
+        ui = {
+            border = "rounded",
+        }
+    }
+)
