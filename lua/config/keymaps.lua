@@ -49,21 +49,8 @@ keymap("t", "<C-l>", "<C-\\><C-N><C-w>l", opts)
 -- Selection
 keymap("n", "<C-a>", "ggVG", opts)
 
--- LSP
-keymap("n", "r", ":lua vim.lsp.buf.format{async=true}<cr>", opts)
-
--- Trouble
-vim.keymap.set("n", "gR", function() require("trouble").toggle("lsp_references") end)
-
 -- Search --
 keymap("n", "<Esc>", ":nohl<cr>", opts)
 
--- Tests
-keymap("n", "t", ":lua require('neotest').run.run(vim.fn.expand('%'))<CR>", opts)
-keymap("n", "ta", ":lua require('neotest').run.run(vim.loop.cwd())<CR>", opts)
-keymap("n", "ts", ":lua require('neotest').summary.toggle()<CR>", opts)
-keymap("n", "tr", ":lua require('neotest').output_panel.toggle()<CR>", opts)
-keymap("n", "tg", ":lua require('neotest').output.open({ enter = true, auto_close = true })<CR>", opts)
-keymap("n", "tk", ":lua require('neotest').run.stop()<CR>", opts)
-keymap("n", "tw", ":lua require('neotest').watch.toggle()<CR>", opts)
-keymap("n", "td", ":lua require('neotest').diagnostics.toggle()<CR>", opts)
+-- Commands
+keymap("", "<F8>", ":GoRun<CR>", opts)

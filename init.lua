@@ -5,13 +5,10 @@ require("config.lazy")
 
 -- Config | LSP
 local cfg = require("yaml-companion").setup({
-    -- Built in file matchers
     builtin_matchers = {
-        -- Detects Kubernetes files based on content
         kubernetes = { enabled = true },
         cloud_init = { enabled = false }
     },
-    -- Pass any additional options that will be merged in the final LSP config
     lspconfig = {
         flags = {
             debounce_text_changes = 150,
@@ -60,32 +57,49 @@ vim.filetype.add({
 local servers = { 'gopls', 'ccls', 'cmake', 'tsserver', 'templ' }
 for _, lsp in ipairs(servers) do
     require("lspconfig")[lsp].setup {
-        on_attach = on_attach,
+        -- on_attach = on_attach,
         flags = {
             debounce_text_changes = 150,
         },
     }
 end
 
--- Auto Actions on save
-local function nvim_create_augroups(definitions)
-    for group_name, definition in pairs(definitions) do
-        vim.api.nvim_command('augroup ' .. group_name)
-        vim.api.nvim_command('autocmd!')
-        for _, def in ipairs(definition) do
-            local command = table.concat(vim.tbl_flatten { 'autocmd', def }, ' ')
-            vim.api.nvim_command(command)
-        end
-        vim.api.nvim_command('augroup END')
-    end
-end
+-- Autocmd
 
-nvim_create_augroups({
-    go_save = {
-        { "BufWritePre", "*.go", "lua vim.lsp.buf.format()" },
-        { "BufWritePre", "*.go", ":%! goimports" },
-    },
-    temple_save = {
-        { "BufWritePre", "*.templ", "lua vim.lsp.buf.format()" }
-    }
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*.go",
+  callback = function()
+    local params = vim.lsp.util.make_range_params()
+    params.context = {only = {"source.organizeImports"}}
+    -- buf_request_sync defaults to a 1000ms timeout. Depending on your
+    -- machine and codebase, you may want longer. Add an additional
+    -- argument after params if you find that you have to write the file
+    -- twice for changes to be saved.
+    -- E.g., vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
+    local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
+    for cid, res in pairs(result or {}) do
+      for _, r in pairs(res.result or {}) do
+        if r.edit then
+          local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
+          vim.lsp.util.apply_workspace_edit(r.edit, enc)
+        end
+      end
+    end
+    vim.lsp.buf.format({async = false})
+  end
 })
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*.templ",
+  callback = function()
+    vim.lsp.buf.format()
+  end
+})
+
+vim.api.nvim_create_autocmd("TextYankPost", {
+    callback = function()
+        vim.highlight.on_yank()
+    end
+})
+
+

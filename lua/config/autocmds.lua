@@ -2,12 +2,6 @@ local api = vim.api
 
 api.nvim_create_autocmd("BufEnter", { command = [[set formatoptions-=cro]] })
 
-api.nvim_create_autocmd("TextYankPost", {
-    callback = function()
-        vim.highlight.on_yank()
-    end
-})
-
 api.nvim_create_autocmd("BufReadPost", {
     callback = function()
         local mark = vim.api.nvim_buf_get_mark(0, '"')

@@ -94,7 +94,6 @@ return {
             i = { "<cmd>Telescope live_grep<cr>", "Find Text in File" },
             w = { "<cmd>w!<CR>", "Save" },
             k = { "<cmd>bdelete<CR>", "Kill Buffer" },
-            p = { "<cmd>Lazy<CR>", "Plugin Manager" },
             s = {
                 name = "Telescope",
                 l = { "<cmd>Telescope oldfiles<cr>", "Find Recent File" },
@@ -105,6 +104,7 @@ return {
                 n = { "<cmd>lua require('telescope').extensions.notify.notify()<cr>", "Find Notification" },
                 u = { "<cmd>lua require('telescope').extensions.undo.undo()<cr>", "Find in Undo Tree" },
                 y = { "<cmd>YAMLTelescope<cr>", "Find in YAML" },
+                z = { "<cmd>Telescope colorscheme<cr>", "Find colorscheme" },
             },
             l = {
                 name = "LSP",
@@ -112,6 +112,7 @@ return {
                 i = { "<cmd>LspInfo<cr>", "Info" },
                 l = { "<cmd>lua vim.lsp.codelens.run()<cr>", "CodeLens Action" },
                 r = { "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename" },
+                f = { "<cmd>lua vim.lsp.buf.format()<cr>", "Format" },
                 s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
                 S = {
                     "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
@@ -132,20 +133,29 @@ return {
                 q = { "<cmd>TroubleToggle quickfix<cr>", "Quickfix" },
                 c = { "<cmd>TroubleClose<cr>", "Close" },
             },
+            t = {
+                name = "Test",
+                t = { function() require("neotest").run.run(vim.fn.expand("%")) end, "Run test under cursor" },
+                a = { function() require("neotest").run.run(vim.loop.cwd()) end, "Run all test" },
+                s = { function() require("neotest").summary.toggle() end, "Toggle summary" },
+                r = { function() require("neotest").output_panel.toggle() end, "Toggle output" },
+                g = { function() require("neotest").output.open({ enter = true, auto_close = true}) end, "Show output float" },
+                k = { function() require("neotest").run.stop() end, "Stop tests" },
+                w = { function() require("neotest").watch.toggle() end, "Watch changes" },
+            },
             g = {
                 name = "Git",
+                l = { "<cmd>LazyGit<cr>", "LazyGit" },
                 b = { require("telescope.builtin").git_branches, "Branches" },
                 c = {
                     b = { require("telescope.builtin").git_bcommits, "Buffer commits" },
                     c = { require("telescope.builtin").git_commits, "Git commits" },
                 },
-                -- Signs
                 h = {
                     name = "Git signs",
                     p = { "<cmd>Gitsigns preview_hunk<CR>", "Preview hunk" },
                     r = { "<cmd>Gitsigns reset_hunk<CR>", "Reset hunk" },
                     s = { "<cmd>Gitsigns stage_hunk<CR>", "Stage hunk" },
-                    -- Toggle highlights
                     t = {
                         name = "Toggle highlights",
                         b = { "<cmd>Gitsigns toggle_current_line_blame<CR>", "Toggle git blame on line" },
@@ -160,7 +170,27 @@ return {
                 f = { "<cmd>Get fetch<CR>", "git fetch" },
                 z = { "<cmd>Gitsigns toggle_current_line_blame<CR>", "Toggle git blame on line" },
             },
-            e = { "<cmd>Neotree toggle float<CR>", "Float File Explorer" },
+            d = {
+                name = "Debugging",
+                s = {
+                    function ()
+                        require("dap").continue({})
+                        vim.cmd("tabedit %")
+                        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-o>", false, true, true), "n", false)
+                        require("dapui").toggle({})
+                    end
+                    , "Start debugging" },
+                x = { function() require("dap").disconnect() end, "Stop debugging" },
+                b = { function() require("dap").toggle_breakpoint() end, "Toggle Breakpoint" },
+                B = { function() require("dap").set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, "Breakpoint with condition" },
+                l = { function() require("dap").set_breakpoint(nil, nil, vim.fn.input('Log point message: ')) end, "Breakpoint with log message" },
+                k = { function() require("dap.ui.widgets").hover() end, "Hover"},
+                t = { function() require("dap-go").debug_test() end, "Debug test"},
+                c = { function() require("dap").run_to_cursor() end, "Run to cursor"},
+                e = { function() require("dap").repl.open() end, "Open repl"},
+                r = { function() require("dap").restart() end, "Restart"},
+            },
+            n = { "<cmd>Neotree filesystem toggle float<CR>", "Float File Explorer" },
         }
 
         which_key.setup(setup)

@@ -35,21 +35,20 @@ return {
                 end
 
                 map("gd", require("telescope.builtin").lsp_definitions, "Goto Definition")
+                map("gD", vim.lsp.buf.declaration, "Goto Declaration")
                 map("gr", require("telescope.builtin").lsp_references, "Goto References")
                 map("gi", require("telescope.builtin").lsp_implementations, "Goto Implementation")
-                map("go", require("telescope.builtin").lsp_type_definitions, "Type Definition")
-                map("<leader>p", require("telescope.builtin").lsp_document_symbols, "Document Symbols")
-                map("<leader>P", require("telescope.builtin").lsp_workspace_symbols, "Workspace Symbols")
-                map("<leader>Ps", require("telescope.builtin").lsp_dynamic_workspace_symbols, "Workspace Symbols")
+                map("go", require("telescope.builtin").lsp_type_definitions, "Goto Type Definition")
+                map("gci", require("telescope.builtin").lsp_incoming_calls, "Goto Incoming Calls")
+                map("gco", require("telescope.builtin").lsp_outgoing_calls, "Goto Outgoing Calls")
+                map("gyd", require("telescope.builtin").lsp_document_symbols, "Goto Document Symbols")
+                map("gyw", require("telescope.builtin").lsp_workspace_symbols, "Goto Workspace Symbols")
+                map("gs", vim.lsp.buf.signature_help, "Hover Signature Documentation")
 
-                map("gl", vim.diagnostic.open_float, "Open Diagnostic Float")
                 map("K", vim.lsp.buf.hover, "Hover Documentation")
-                map("gs", vim.lsp.buf.signature_help, "Signature Documentation")
-                map("gD", vim.lsp.buf.declaration, "Goto Declaration")
 
                 map("<leader>v", "<cmd>vsplit | lua vim.lsp.buf.definition()<cr>", "Goto Definition in Vertical Split")
 
-                -- Thank you teej
                 -- https://github.com/nvim-lua/kickstart.nvim/blob/master/init.lua#L502
                 local client = vim.lsp.get_client_by_id(event.data.client_id)
                 if client and client.server_capabilities.documentHighlightProvider then
@@ -66,8 +65,6 @@ return {
             end,
         })
 
-        -- local capabilities = vim.lsp.protocol.make_client_capabilities()
-        -- capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
         local capabilities = vim.lsp.protocol.make_client_capabilities()
         capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 
@@ -85,16 +82,7 @@ return {
         })
 
         -- Dart LSP
-        require 'lspconfig'.dartls.setup {}
-
-        -- Gleam LSP
-        -- For some reason mason doesn't work with gleam lsp
-        require("lspconfig").gleam.setup({
-            cmd = { "gleam", "lsp" },
-            filetypes = { "gleam" },
-            root_dir = require("lspconfig").util.root_pattern("gleam.toml", ".git"),
-            capabilities = capabilities,
-        })
+        -- require 'lspconfig'.dartls.setup {}
 
         vim.diagnostic.config({
             title = false,

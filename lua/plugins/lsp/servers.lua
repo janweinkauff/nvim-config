@@ -41,7 +41,7 @@ return {
         cmd = { "yaml-language-server", "--stdio" },
         filetypes = { "yaml" },
     },
-    dartls = {
-        cmd = { "dart", "language-server", "--protocol=lsp" },
-    },
+    -- dartls = {
+    --     cmd = { "dart", "language-server", "--protocol=lsp" },
+    -- },
 }

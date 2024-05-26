@@ -8,6 +8,8 @@ opt.list = true
 
 opt.mouse = "a"
 
+opt.cursorline = true
+
 opt.number = true
 opt.relativenumber = true
 
