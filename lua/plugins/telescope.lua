@@ -7,7 +7,7 @@ return {
         { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' }
     },
     config = function()
-        local trouble = require("trouble.providers.telescope")
+        local trouble = require("trouble.sources.telescope")
         local actions = require("telescope.actions")
         local icons = require("config.icons")
         require("telescope").setup({
