@@ -46,10 +46,28 @@ keymap("t", "<C-j>", "<C-\\><C-N><C-w>j", opts)
 keymap("t", "<C-k>", "<C-\\><C-N><C-w>k", opts)
 keymap("t", "<C-l>", "<C-\\><C-N><C-w>l", opts)
 
+-- navigation
+function HandleURL()
+    local line = vim.fn.getline('.')
+    local url_pattern = '[a-z]+://[^ >,;\'"()]*[^ >,;\'"().]'
+    local markdown_url_pattern = '%b<>%f[%a]%f[^<]|%b()%f[%a]%f[^)]|%b[]%f[%a]%f[^%]]'
+    local uri = line:match(url_pattern) or line:match(markdown_url_pattern)
+    if uri then
+        uri = uri:gsub("^<", ""):gsub(">$", "")
+        uri = uri:gsub("%b[]%(", ""):gsub("%)", "")
+        vim.api.nvim_echo({ { uri, "Normal" } }, false, {})
+
+        vim.cmd('silent !open ' .. '-jg -a Safari '.. vim.fn.shellescape(uri, 1))
+    else
+        vim.api.nvim_echo({ { "No URI found in line.", "WarningMsg" } }, false, {})
+    end
+end
+keymap('n', 'gx', ':lua HandleURL()<CR>', { noremap = true, silent = true })
+
 -- Selection
 keymap("n", "<C-a>", "ggVG", opts)
 
--- Search --
+-- Search
 keymap("n", "<Esc>", ":nohl<cr>", opts)
 
 -- Commands
