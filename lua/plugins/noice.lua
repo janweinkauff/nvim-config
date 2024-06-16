@@ -25,5 +25,8 @@ return {
                 lsp_doc_border = true,
             },
         })
+        require("notify").setup({
+            render = "wrapped-compact",
+        })
     end,
 }
