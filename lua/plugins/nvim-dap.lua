@@ -18,6 +18,17 @@ return {
         require("nvim-dap-virtual-text").setup({})
         vim.g.dap_virtual_text = true
 
+        -- Configurations
+        require('dap-go').setup {
+            dap_configurations = {
+                {
+                    type = "go",
+                    name = "Debug Directory",
+                    request = "launch",
+                    program = "."
+                },
+            },
+        }
         -- Allows breakpoints to last between sessions
         require("persistent-breakpoints").setup({
             load_breakpoints_event = { "BufReadPost" },
@@ -34,10 +45,10 @@ return {
             ui.open()
         end
         dap.listeners.before.event_terminated.dapui_config = function()
-            ui.close()
+            -- ui.close()
         end
         dap.listeners.before.event_exited.dapui_config = function()
-            ui.close()
+            -- ui.close()
         end
 
         -- Icons
