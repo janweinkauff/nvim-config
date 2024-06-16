@@ -102,4 +102,5 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     end
 })
 
-
+-- Initialize vscode launch configurations
+require("dap.ext.vscode").load_launchjs()  
