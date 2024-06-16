@@ -91,8 +91,9 @@ return {
         local mappings = {
             f = { "<cmd>Telescope find_files<cr>", "Find File" },
             b = { "<cmd>Telescope buffers<cr>", "Find Buffer" },
-            i = { "<cmd>Telescope live_grep<cr>", "Find Text in File" },
-            w = { "<cmd>w!<CR>", "Save" },
+            i = { function() require('telescope.builtin').live_grep({ default_text = vim.fn.expand('<cword>') }) end, "Find Text under Cursor in File" },
+            w = { "<cmd>w!<cr>", "save" },
+            Q = { "<cmd>qa!<cr>", "quit" },
             k = { "<cmd>bdelete<CR>", "Kill Buffer" },
             s = {
                 name = "Telescope",
@@ -109,15 +110,10 @@ return {
             l = {
                 name = "LSP",
                 a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
-                i = { "<cmd>LspInfo<cr>", "Info" },
                 l = { "<cmd>lua vim.lsp.codelens.run()<cr>", "CodeLens Action" },
                 r = { "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename" },
                 f = { "<cmd>lua vim.lsp.buf.format()<cr>", "Format" },
-                s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
-                S = {
-                    "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
-                    "Workspace Symbols",
-                },
+                i = { "<cmd>LspInfo<cr>", "Info" },
             },
             h = {
                 name = "Harpoon",
@@ -127,11 +123,13 @@ return {
             },
             j = {
                 name = "Trouble",
-                t = { "<cmd>TroubleToggle<cr>", "Diagnostics" },
-                d = { "<cmd>TroubleToggle document_diagnostics<cr>", "Document" },
-                w = { "<cmd>TroubleToggle workspace_diagnostics<cr>", "Workspace" },
-                q = { "<cmd>TroubleToggle quickfix<cr>", "Quickfix" },
-                c = { "<cmd>TroubleClose<cr>", "Close" },
+                j = { "<cmd>Trouble diagnostics toggle<cr>", "Diagnostics" },
+                b = { "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", "Document" },
+                s = { "<cmd>Trouble symbols toggle focus=true<cr>", "Symbols" },
+                q = { "<cmd>Trouble qflist toggle<cr>", "Quickfix" },
+                l = { "<cmd>Trouble loclist toggle<cr>", "Loclist" },
+                r = { "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", "References" },
+                c = { "<cmd>Trouble close<cr>", "Close" },
             },
             t = {
                 name = "Test",
@@ -139,7 +137,7 @@ return {
                 a = { function() require("neotest").run.run(vim.loop.cwd()) end, "Run all test" },
                 s = { function() require("neotest").summary.toggle() end, "Toggle summary" },
                 r = { function() require("neotest").output_panel.toggle() end, "Toggle output" },
-                g = { function() require("neotest").output.open({ enter = true, auto_close = true}) end, "Show output float" },
+                g = { function() require("neotest").output.open({ enter = true, auto_close = true }) end, "Show output float" },
                 k = { function() require("neotest").run.stop() end, "Stop tests" },
                 w = { function() require("neotest").watch.toggle() end, "Watch changes" },
             },
@@ -158,7 +156,6 @@ return {
                     s = { "<cmd>Gitsigns stage_hunk<CR>", "Stage hunk" },
                     t = {
                         name = "Toggle highlights",
-                        b = { "<cmd>Gitsigns toggle_current_line_blame<CR>", "Toggle git blame on line" },
                         l = { "<cmd>Gitsigns toggle_linehl<CR>", "Toggle line highlights" },
                         n = { "<cmd>Gitsigns toggle_numhl<CR>", "Toggle number highlights" },
                         s = { "<cmd>Gitsigns toggle_signs<CR>", "Toggle signs" },
@@ -172,25 +169,38 @@ return {
             },
             d = {
                 name = "Debugging",
+                d = { function() require("dapui").toggle() end, "Restart" },
                 s = {
-                    function ()
+                    function()
+                        -- if vim.fn.filereadable(".vscode/launch.json") then
+                        --     require("dap.ext.vscode").load_launchjs(nil, {})
+                        --end
+
                         require("dap").continue({})
+
                         vim.cmd("tabedit %")
                         vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-o>", false, true, true), "n", false)
                         require("dapui").toggle({})
                     end
                     , "Start debugging" },
-                x = { function() require("dap").disconnect() end, "Stop debugging" },
+                x = {
+                    function()
+                        require("dap").disconnect()
+                        require("dapui").close({})
+                    end
+                    , "Stop debugging" },
                 b = { function() require("dap").toggle_breakpoint() end, "Toggle Breakpoint" },
                 B = { function() require("dap").set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, "Breakpoint with condition" },
                 l = { function() require("dap").set_breakpoint(nil, nil, vim.fn.input('Log point message: ')) end, "Breakpoint with log message" },
-                k = { function() require("dap.ui.widgets").hover() end, "Hover"},
-                t = { function() require("dap-go").debug_test() end, "Debug test"},
-                c = { function() require("dap").run_to_cursor() end, "Run to cursor"},
-                e = { function() require("dap").repl.open() end, "Open repl"},
-                r = { function() require("dap").restart() end, "Restart"},
+                k = { function() require("dap.ui.widgets").hover() end, "Hover" },
+                t = { function() require("dap-go").debug_test() end, "Debug test" },
+                c = { function() require("dap").run_to_cursor() end, "Run to cursor" },
+                e = { function() require("dap").repl.open() end, "Open repl" },
+                r = { function() require("dap").restart() end, "Restart" },
             },
             n = { "<cmd>Neotree filesystem toggle float<CR>", "Float File Explorer" },
+            ["|"] = { "<cmd>vsplit<cr>", "Create vsplit" },
+            ["-"] = { "<cmd>split<cr>", "Create split" },
         }
 
         which_key.setup(setup)
