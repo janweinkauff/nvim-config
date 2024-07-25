@@ -1,54 +1,47 @@
 return {
     "folke/which-key.nvim",
     event = "VeryLazy",
-    init = function()
-        vim.o.timeout = true
-        vim.o.timeoutlen = 200
-    end,
     opts = {
-        plugins = {
-            presets = {
-                operators = true,
-                motions = true,
-                text_objects = true,
-                windows = true,
-                nav = true,
-                z = true,
-                g = true,
-            },
-        },
-        icons = {
-        },
         win = {
             border = "rounded",
             padding = { 2, 2, 2, 2 },
-            -- winblend = 0,
         },
-        layout = {
-            height = { min = 4, max = 25 },
-            width = { min = 20, max = 50 },
-            spacing = 3,
-            align = "left",
-        },
-        show_help = true,
-        triggers = "auto",
     },
     keys = {
+        -- General
         { "<leader>Q", "<cmd>qa!<cr>", desc = "Quit" },
         { "<leader>w", "<cmd>w!<cr>", desc = "Save" },
 
         -- Splits
         { "<leader>-", "<cmd>split<cr>", desc = "Create split"},
         { "<leader>|", "<cmd>vsplit<cr>", desc = "Create vsplit" },
+        { "<leader>c", "<cmd>close<cr>", desc = "Close split" },
 
         -- Buffers
+        { "<leader>n", "<cmd>Neotree filesystem toggle float<CR>", desc = "Float File Explorer" },
         { "<leader>b", "<cmd>Telescope buffers<cr>", desc = "List Buffers" },
         { "<leader>k", "<cmd>bdelete<CR>", desc = "Kill Buffer" },
 
         -- Find
         { "<leader>f", "<cmd>Telescope find_files<cr>", desc = "Find File" },
-        { "<leader>i", function() require('telescope.builtin').live_grep({ default_text = vim.fn.expand('<cword>') }) end, desc = "Find Text under Cursor in File" },
-        { "<leader>n", "<cmd>Neotree filesystem toggle float<CR>", desc = "Float File Explorer" },
+        { "<leader>I", function() require('telescope.builtin').live_grep() end, desc = "Find Text from selection", mode = "n" },
+        { "<leader>I",
+            function()
+                vim.cmd('noau normal! "vy"')
+                local text = vim.fn.getreg('v')
+                vim.fn.setreg('v', {})
+                text = string.gsub(text, "\n", "")
+                require('telescope.builtin').live_grep({ default_text = text })
+            end, desc = "Find Text from selection", mode = "v" },
+        { "<leader>i", "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "Find Text in current Buffer" },
+        { "<leader>i",
+            function()
+                vim.cmd('noau normal! "vy"')
+                local text = vim.fn.getreg('v')
+                vim.fn.setreg('v', {})
+                text = string.gsub(text, "\n", "")
+                require('telescope.builtin').current_buffer_fuzzy_find({ default_text = text })
+            end, desc = "Find Text from selection", mode = "v" },
 
         -- Debugging
         { "<leader>d", group = "Debugging" },
@@ -78,9 +71,9 @@ return {
 
         -- Git
         { "<leader>g", group = "Git" },
---            { "<leader>gb", <function 1>, desc = "Branches" },
---            { "<leader>gcb", <function 1>, desc = "Buffer commits" },
---            { "<leader>gcc", <function 1>, desc = "Git commits" },
+        { "<leader>gb", require("telescope.builtin").git_branches, desc = "Branches" },
+        -- { "<leader>gcb", require("telescope.builtin").git_bcommits, desc = "Buffer commits" },
+        -- { "<leader>gcc", require("telescope.builtin").git_commits, desc = "Git commits" },
         { "<leader>gf", "<cmd>Get fetch<CR>", desc = "git fetch" },
         { "<leader>gl", "<cmd>LazyGit<cr>", desc = "LazyGit" },
         { "<leader>gp", "<cmd>Git push<CR>", desc = "git push" },
@@ -95,5 +88,50 @@ return {
         { "<leader>ghtn", "<cmd>Gitsigns toggle_numhl<CR>", desc = "Toggle number highlights" },
         { "<leader>ghts", "<cmd>Gitsigns toggle_signs<CR>", desc = "Toggle signs" },
         { "<leader>ghtw", "<cmd>Gitsigns toggle_word_diff<CR>", desc = "Toggle word diff highlights" },
+
+        -- Trouble
+        { "<leader>j", group = "Trouble" },
+        { "<leader>jc", "<cmd>Trouble close<cr>", desc = "Close" },
+        { "<leader>jd", "<cmd>Trouble diagnostics toggle focus=true filter.buf=0<cr>", desc = "Document" },
+        { "<leader>jj", "<cmd>Trouble diagnostics toggle focus=true<cr>", desc = "Diagnostics" },
+        { "<leader>jl", "<cmd>Trouble loclist toggle<cr>", desc = "Loclist" },
+        { "<leader>jq", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix" },
+        { "<leader>jr", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", desc = "References" },
+        { "<leader>js", "<cmd>Trouble symbols toggle focus=true<cr>", desc = "Symbols" },
+
+        -- LSP 
+        { "<leader>l", group = "LSP" },
+        { "<leader>li", "<cmd>LspInfo<cr>", desc = "Info" },
+        { "<leader>ll", "<cmd>lua vim.lsp.codelens.run()<cr>", desc = "CodeLens Action" },
+        { "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<cr>", desc = "Rename" },
+        { "<leader>la", "<cmd>lua vim.lsp.buf.code_action()<cr>", desc = "Code Action" },
+        { "<leader>lf", "<cmd>lua vim.lsp.buf.format()<cr>", desc = "Format" },
+
+        -- Telescope
+        { "<leader>s", group = "Telescope" },
+        { "<leader>sc", "<cmd>Telescope commands<cr>", desc = "Find Command" },
+        { "<leader>sj", "<cmd>TodoTelescope<cr>", desc = "Find Todos" },
+        { "<leader>sl", "<cmd>Telescope oldfiles<cr>", desc = "Find Recent File" },
+        { "<leader>ss", "<cmd>lua require('telescope.builtin').search_history()<cr>", desc = "Find in Search History" },
+        { "<leader>sh", "<cmd>lua require('telescope.builtin').help_tags()<cr>", desc = "Find in Help" },
+        { "<leader>sq", "<cmd>lua require('telescope.builtin').quickfix()<cr>", desc = "Find in Quickfix" },
+        { "<leader>st", "<cmd>lua require('telescope.builtin').treesitter()<cr>", desc = "Find in Treesitter" },
+        { "<leader>sg", "<cmd>lua require('telescope.builtin').git_status()<cr>", desc = "Find in git status" },
+        { "<leader>sm", "<cmd>Telescope keymaps<cr>", desc = "Find Keymap" },
+        { "<leader>sn", "<cmd>lua require('telescope').extensions.notify.notify()<cr>", desc = "Find Notification" },
+        { "<leader>sr", "<cmd>Telescope registers<cr>", desc = "Find Register" },
+        { "<leader>su", "<cmd>lua require('telescope').extensions.undo.undo()<cr>", desc = "Find in Undo Tree" },
+        { "<leader>sy", "<cmd>YAMLTelescope<cr>", desc = "Find in YAML" },
+        { "<leader>sz", "<cmd>Telescope colorscheme<cr>", desc = "Find colorscheme" },
+
+        -- Test
+        { "<leader>t", group = "Test" },
+        { "<leader>ta", function() require("neotest").run.run(vim.loop.cwd()) end, desc = "Run all test" },
+        { "<leader>tg", function() require("neotest").output.open({ enter = true, auto_close = true }) end, desc = "Show output float" },
+        { "<leader>tk", function() require("neotest").run.stop() end, desc = "Stop tests" },
+        { "<leader>tr", function() require("neotest").output_panel.toggle() end, desc = "Toggle output" },
+        { "<leader>ts", function() require("neotest").summary.toggle() end, desc = "Toggle summary" },
+        { "<leader>tt", function() require("neotest").run.run(vim.fn.expand("%")) end, desc = "Run test under cursor" },
+        { "<leader>tw", function() require("neotest").watch.toggle() end, desc = "Watch changes" },
     },
 }
