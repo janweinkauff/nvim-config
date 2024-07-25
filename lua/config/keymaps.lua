@@ -34,6 +34,10 @@ keymap("v", ">", ">gv", opts)
 keymap("n", "<C-d>", "<C-d>zz", opts)
 keymap("n", "<C-u>", "<C-u>zz", opts)
 
+-- New line
+keymap("n", "oo", "o<esc>", opts)
+keymap("n", "OO", "O<esc>", opts)
+
 -- move text up/down
 keymap("v", "J", ":move '>+1<cr>gv-gv", opts)
 keymap("v", "K", ":move '<-2<cr>gv-gv", opts)
@@ -46,7 +50,16 @@ keymap("t", "<C-j>", "<C-\\><C-N><C-w>j", opts)
 keymap("t", "<C-k>", "<C-\\><C-N><C-w>k", opts)
 keymap("t", "<C-l>", "<C-\\><C-N><C-w>l", opts)
 
--- navigation
+-- Selection
+keymap("n", "<C-a>", "ggVG", opts)
+
+-- Trouble
+vim.keymap.set("n", "gR", function() require("trouble").toggle("lsp_references") end)
+
+-- Search --
+keymap("n", "<Esc>", ":nohl<cr>", opts)
+
+-- URL --
 function HandleURL()
     local line = vim.fn.getline('.')
     local url_pattern = '[a-z]+://[^ >,;\'"()]*[^ >,;\'"().]'
@@ -57,18 +70,10 @@ function HandleURL()
         uri = uri:gsub("%b[]%(", ""):gsub("%)", "")
         vim.api.nvim_echo({ { uri, "Normal" } }, false, {})
 
-        vim.cmd('silent !open ' .. '-jg -a Safari '.. vim.fn.shellescape(uri, 1))
+        vim.cmd('silent !open ' .. '-jg -a Safari ' .. vim.fn.shellescape(uri, 1))
     else
         vim.api.nvim_echo({ { "No URI found in line.", "WarningMsg" } }, false, {})
     end
 end
+
 keymap('n', 'gx', ':lua HandleURL()<CR>', { noremap = true, silent = true })
-
--- Selection
-keymap("n", "<C-a>", "ggVG", opts)
-
--- Search
-keymap("n", "<Esc>", ":nohl<cr>", opts)
-
--- Commands
-keymap("", "<F8>", ":GoRun<CR>", opts)

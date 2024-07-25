@@ -46,7 +46,7 @@ opt.hlsearch = true
 opt.incsearch = true
 
 opt.termguicolors = true
-opt.timeoutlen = 300
+opt.timeoutlen = 200
 opt.updatetime = 50
 
 opt.undofile = true
@@ -60,7 +60,6 @@ opt.winminwidth = 4
 opt.wrap = false
 
 vim.g.markdown_recommended_style = 0
-
 
 -- Disable netrw
 vim.g.loaded_netrw = 1
