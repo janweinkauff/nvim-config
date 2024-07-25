@@ -7,24 +7,31 @@ return {
         { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' }
     },
     config = function()
-        local trouble = require("trouble.sources.telescope")
         local actions = require("telescope.actions")
         local icons = require("config.icons")
+
         require("telescope").setup({
             file_ignore_patterns = { "%.git/." },
             defaults = {
                 mappings = {
                     i = {
-                        ["<c-t>"] = trouble.open_with_trouble,
+                        ["<C-u>"] = false,
                         ["<esc>"] = actions.close,
+                        ["<C-s>"] = actions.cycle_previewers_next,
+                        ["<C-a>"] = actions.cycle_previewers_prev,
                     },
-                    n = { ["<c-t>"] = trouble.open_with_trouble },
+                    n = {
+                        ["q"] = actions.close,
+                        ["<esc>"] = actions.close,
+                        ["<C-s>"] = actions.cycle_previewers_next,
+                        ["<C-a>"] = actions.cycle_previewers_prev,
+                    },
                 },
                 path_display = {
                     "filename_first",
                 },
                 previewer = true,
-                prompt_prefix = " " .. icons.ui.Telescope .. " ",
+                prompt_prefix = '🔍 ',
                 selection_caret = icons.ui.BoldArrowRight .. " ",
                 file_ignore_patterns = { "node_modules", "package-lock.json" },
                 initial_mode = "insert",
@@ -50,7 +57,7 @@ return {
             },
             pickers = {
                 find_files = {
-                    previewer = false,
+                    previewer = true,
                     layout_config = {
                         height = 0.4,
                         prompt_position = "top",
@@ -109,6 +116,16 @@ return {
                         preview_cutoff = 120,
                     },
                 },
+                git_commits = {
+                    previewer = true,
+                    initial_mode = "normal",
+                    layout_strategy = 'cursor',
+                    layout_config = {
+                        height = 0.9,
+                        width = 0.9,
+                        prompt_position = "top",
+                    },
+                },
                 grep_string = {
                     only_sort_text = true,
                     previewer = true,
@@ -142,8 +159,37 @@ return {
                 },
             },
         })
+
         require("telescope").load_extension("undo")
         require('telescope').load_extension('fzf')
         require('telescope').load_extension('notify')
+
+        local previewers = require("telescope.previewers")
+        local builtin = require("telescope.builtin")
+        local delta = previewers.new_termopen_previewer {
+            get_command = function(entry)
+                return { 'git', '-c', 'core.pager=delta', '-c', 'delta.side-by-side=false', 'diff', entry.value .. '^!' }
+            end
+        }
+        function My_git_commits()
+            builtin.git_commits({
+                previewer = {
+                    delta,
+                    previewers.git_commit_message.new({}),
+                    previewers.git_commit_diff_as_was.new({}),
+                }
+            })
+        end
+        function My_git_bcommits()
+            builtin.git_bcommits({
+                previewer = {
+                    delta,
+                    previewers.git_commit_message.new({}),
+                    previewers.git_commit_diff_as_was.new({}),
+                }
+            })
+        end
+        vim.api.nvim_set_keymap('n', '<Leader>gcc', '<Cmd>lua My_git_commits()<CR>', { noremap = true, silent = true })
+        vim.api.nvim_set_keymap('n', '<Leader>gcb', '<Cmd>lua My_git_bcommits()<CR>', { noremap = true, silent = true })
     end,
 }
